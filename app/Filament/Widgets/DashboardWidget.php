@@ -30,3 +30,4 @@ class DashboardWidget extends ChartWidget
         return 'line';
     }
 }
+

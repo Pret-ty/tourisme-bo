@@ -44,7 +44,7 @@ class LieuResource extends Resource
     public static function form(Schema $schema): Schema
     {
         // return LieuForm::configure($schema);
-        return $schema 
+        return $schema
         ->schema([
             TextInput::make('nom')->required(),
             TextInput::make('description')->required(),
@@ -58,7 +58,7 @@ class LieuResource extends Resource
                 ->label('Ville')
                 ->relationship('ville', 'nom')
                 ->searchable()
-                ->required(),   
+                ->required(),
 
             Select::make('categorie_id')
                 ->label('Catégorie')
@@ -77,7 +77,7 @@ class LieuResource extends Resource
                     ->label('Image')
                     ->getStateUsing(fn ($record) => asset('storage/' . $record->images))
                     ->height(200),
-                
+
                 TextEntry::make('ville.nom')->label('Ville'),
                 TextEntry::make('categorie.nom')->label('Catégorie'),
                 TextEntry::make('latitude')->label('Latitude'),
@@ -91,21 +91,19 @@ class LieuResource extends Resource
         ->columns([
             TextColumn::make('nom'),
             TextColumn::make('description'),
-            TextColumn::make('images')
+            ImageColumn::make('images')
                 ->label('Image')
-                ->url(fn ($record) => asset('storage/' . $record->images))
-                ->openUrlInNewTab()
-                ->formatStateUsing(fn ($state) => basename($state)),
-
-
+                ->circular()
+                ->size(40)
+                ->height(40)
+                ->defaultImageUrl(asset('images/placeholder.png'))
+                ->getStateUsing(fn ($record) => $record->images ? asset('storage/' . $record->images) : asset('images/placeholder.png')),
             TextColumn::make('latitude'),
             TextColumn::make('longitude'),
             TextColumn::make('categorie.nom'),
             TextColumn::make('ville.nom'),
-            
         ])
         ->actions([
-            
             ViewAction::make(),
             EditAction::make(),
             DeleteAction::make(),
